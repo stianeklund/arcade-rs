@@ -1,73 +1,74 @@
 extern crate sdl2;
 
-use sdl2::pixels::Color;
-use sdl2::render::Renderer;
-use std::thread;
-use std::time::Duration;
-
 #[macro_use]
-mod events;
+mod phi;
+mod views;
 
-// can be passed easily between functions.
-// note lifetime specifier
-pub struct Phi<'a> {
-    pub events: Events,
-    pub renderer: Renderer<'a>,
-}
-// Specify action before passed to View to be rendered
-pub enum ViewAction {
-    None,
-    Quit,
-}
+use sdl2::pixels::Color;
+use phi::{Events, Phi, View, ViewAction};
 
-pub trait View {
-    // TODO View is called every frame. Responsible for redering current view.
-    // Elapsed time is in seconds
-    fn render(&mut self, context: &mut Phi, elapsed: f64) -> ViewAction;
-}
-
-struct_events! {
-    keyboard: {
-        key_escape: Escape,
-        key_up: Up,
-        key_down: Down
-    },
-    else: {
-        quit: Quit { .. }
-    }
-}
+// use sdl2::render::Renderer;
+// use std::thread;
+// use std::time::Duration;
 
 fn main() {
     // Initialize SDL2
-    let sdl_context = sdl2::init().expect("Init failed");
-    let video = sdl_context.video().expect("Init of video failed");
+    let sdl_context = sdl2::init().expect("sdl2 init failure");
+    let video = sdl_context.video().expect("sdl video init failed");
+    let mut timer = sdl_context.timer().expect("Failed to initilize sdl context timer");
 
     // Create window
-    let window = video.window("ArcadeRS Shooter", 800, 600)
+    let window = video.window("ArcadeRS Shooter", 1024, 768 )
         .position_centered().opengl() // use OpenGL for faster rendering
         .build().expect("Window creation failed");
 
-    // Create Renderer
-    let mut renderer = window.renderer()
-        .accelerated()
-        .build().expect("Renderer failed");
+    // Create context
+    let mut context = Phi {
+        events: Events::new(sdl_context.event_pump().expect("failed to create new event context")),
+                renderer: window.renderer()
+                          .accelerated()
+                          .build().unwrap(),
+    };
 
-    // Prepare events record
-    let mut events = Events::new(sdl_context.event_pump().unwrap());
+    // Create default view
+    // Note we're using the struct DefaultView in views/mod.rs
+    let mut current_view: Box<View> = Box::new(::views::DefaultView);
 
-    // Iterate over EventPump & quit if escape is pressed
+    // Frame timing
+    let interval = 1_000 / 60;
+    let mut before = timer.ticks();
+    let mut last_second = timer.ticks();
+    let mut fps = 0u16;
+
+    // Iterate over event pump
     loop {
-        events.pump();
-        if events.now.quit || events.now.key_escape == Some(true) {
-        break;
+        // Frame timing (second instance)
+        let now = timer.ticks();
+        let dt = now - before;
+        let elapsed = dt as f64 / 1_000.0;
+
+        // If time elapsed since last frame is too small wait & try again
+        if dt < interval {
+            timer.delay(interval - dt);
+            continue;
         }
 
-    // Render backdrop
-    renderer.set_draw_color(Color::RGB(0, 0, 0));
-    renderer.clear();
-    renderer.present();
+        // Print FPS
+        before = now;
+        fps += 1;
+
+        if now - last_second > 1_000 {
+            println!("FPS: {}", fps);
+            last_second = now;
+            fps = 0;
+        }
+
+        // Rendering logic
+        context.events.pump();
+
+        match current_view.render(&mut context, 0.01) {
+            ViewAction::None => context.renderer.present(),
+            ViewAction::Quit => break,
+        }
     }
-
-
-    thread::sleep(Duration::from_millis(3000));
 }
