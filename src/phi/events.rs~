@@ -22,7 +22,7 @@ macro_rules! struct_events {
                 ImmediateEvents {
                     // When reinitalized nothing has happened yet.
                     $( $k_alias: None , )*
-                    $( $e_alias: false ), *
+                    $( $e_alias: false ),*
                 }
             }
         }

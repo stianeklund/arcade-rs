@@ -2,6 +2,7 @@
 
 #[macro_use]
 mod events;
+pub mod data;
 
 use sdl2::render::Renderer;
 
@@ -10,6 +11,8 @@ struct_events! {
         key_escape: Escape,
         key_up: Up,
         key_down: Down,
+        key_left: Left,
+        key_right: Right,
         key_space: Space
     },
     else: {
@@ -20,6 +23,13 @@ struct_events! {
 pub struct Phi<'window> {
     pub events: Events,
     pub renderer: Renderer<'window>,
+}
+// Implement output size
+impl <'window> Phi<'window> {
+    pub fn output_size(&self) -> (f64, f64) {
+        let (w, h) = self.renderer.output_size().unwrap();
+        (w as f64, h as f64)
+    }
 }
 
 pub enum ViewAction {
@@ -42,7 +52,7 @@ pub fn spawn<F>(title: &str, init: F)
 
     // Create window
     let window = video.window("ArcadeRS Shooter", 1024, 768 )
-        .position_centered().opengl() // use OpenGL for faster rendering
+        .position_centered().opengl().resizable()
         .build().expect("Window creation failed");
 
     // Create context
