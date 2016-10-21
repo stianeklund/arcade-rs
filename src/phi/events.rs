@@ -13,6 +13,7 @@ macro_rules! struct_events {
         // Some(true) key was pressed
         // Some(false) key was released (from being pressed)
         // None => Nothing has happened
+        resize: Option<(u32, u32)>,
         $( pub $k_alias: Option<bool> , )*
         $( pub $e_alias: bool ),*
         }
@@ -20,6 +21,7 @@ macro_rules! struct_events {
         impl ImmediateEvents {
             pub fn new() -> ImmediateEvents {
                 ImmediateEvents {
+                    resize: None,
                     // When reinitalized nothing has happened yet.
                     $( $k_alias: None , )*
                     $( $e_alias: false ),*
@@ -44,13 +46,14 @@ macro_rules! struct_events {
                     $( $k_alias: false ),*
                 }
             }
-            pub fn pump(&mut self) {
+            pub fn pump(&mut self, renderer: &mut ::sdl2::render::Renderer) {
                 // If SDL context is dropped, poll_iter() will not yield output
                 // Poll for escape keycode
                 self.now = ImmediateEvents::new();
 
                 for event in self.pump.poll_iter() {
                     use sdl2::event::Event::*;
+                    use sdl2::event::WindowEventId::Resized;
                     use sdl2::keyboard::Keycode::*;
 
                     // For match statement below
@@ -58,6 +61,9 @@ macro_rules! struct_events {
                     // check whether the keycode is Some($k_sdl). If it is, then set the $k_alias fields to true."
 
                     match event {
+                        Window { win_event_id: Resized, .. } => {
+                            self.now.resize = Some(renderer.output_size().unwrap());
+                        },
                         KeyDown { keycode, .. } => match keycode {
                             $(
                                 Some($k_sdl) => {

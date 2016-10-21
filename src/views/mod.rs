@@ -2,7 +2,10 @@
 
 use phi::{Phi, View, ViewAction};
 use phi::data::Rectangle;
+use std::path::Path;
 use sdl2::pixels::Color;
+use sdl2::render::{Texture, TextureQuery};
+use sdl2_image::LoadTexture;
 
 
 // Pixels traversed every second when the ship is moving
@@ -12,7 +15,8 @@ const PLAYER_SPEED: f64 = 180.0;
 // View definitions
 
 struct Ship {
-    rect: Rectangle
+    rect: Rectangle,
+    tex: Texture,
 }
 
 pub struct ShipView {
@@ -21,14 +25,21 @@ pub struct ShipView {
 
 impl ShipView {
     pub fn new(phi: &mut Phi) -> ShipView {
+
+        // Try to load texture png from FS.
+        let tex = phi.renderer.load_texture(Path::new("assets/spaceship.png")).expect("asset not found");
+        // Destructure width & height properties (to be used for the ship's bounding box)
+        let TextureQuery { width, height, .. } = tex.query();
+
         ShipView {
             player: Ship {
                 rect: Rectangle {
                     x: 64.0,
                     y: 64.0,
-                    w: 32.0,
-                    h: 32.0,
-                }
+                    w: width as f64,
+                    h: height as f64,
+                },
+                tex: tex,
             }
         }
     }
@@ -65,13 +76,12 @@ impl View for ShipView {
         self.player.rect.x += dx;
         self.player.rect.y += dy;
 
+
         // Restrict width
         let movable_region = Rectangle {
             x: 0.0,
             y: 0.0,
-            // Bug? right side of region is too restricted
-            // w: phi.output_size().0 * 0.70,
-            w: phi.output_size().0 * 0.90,
+            w: phi.output_size().0 * 0.70,
             h: phi.output_size().1,
         };
         // If the player cannot fit within the frame, abort
@@ -83,10 +93,19 @@ impl View for ShipView {
         phi.renderer.set_draw_color(Color::RGB(0, 0, 0));
         phi.renderer.clear();
 
-        // Render scene
-        phi.renderer.set_draw_color(Color::RGB(200, 200, 50));
-        phi.renderer.fill_rect(self.player.rect.to_sdl().unwrap());
+        // Render bounding box (for debugging)
+        // phi.renderer.set_draw_color(Color::RGB(200, 200, 50));
+        // phi.renderer.fill_rect(self.player.rect.to_sdl().unwrap());
+        phi.renderer.copy(&mut self.player.tex,
+        Rectangle {
+            x: 0.0,
+            y: 0.0,
+            w: self.player.rect.w,
+            h: self.player.rect.h,
+        }.to_sdl(),
 
+
+        self.player.rect.to_sdl());
 
         ViewAction::None
     }
