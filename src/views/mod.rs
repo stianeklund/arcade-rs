@@ -1,12 +1,11 @@
 // views/mod.rs
 
+use std::path::Path;
 use phi::{Phi, View, ViewAction};
 use phi::data::Rectangle;
-use std::path::Path;
 use sdl2::pixels::Color;
 use sdl2::render::{Texture, TextureQuery};
 use sdl2_image::LoadTexture;
-
 
 // Pixels traversed every second when the ship is moving
 const PLAYER_SPEED: f64 = 180.0;
@@ -27,7 +26,9 @@ impl ShipView {
     pub fn new(phi: &mut Phi) -> ShipView {
 
         // Try to load texture png from FS.
-        let tex = phi.renderer.load_texture(Path::new("assets/spaceship.png")).expect("asset not found");
+
+        // .expect() actually causes issues here.
+        let tex = phi.renderer.load_texture(Path::new("assets/spaceship.png")).unwrap();
         // Destructure width & height properties (to be used for the ship's bounding box)
         let TextureQuery { width, height, .. } = tex.query();
 
@@ -96,6 +97,8 @@ impl View for ShipView {
         // Render bounding box (for debugging)
         // phi.renderer.set_draw_color(Color::RGB(200, 200, 50));
         // phi.renderer.fill_rect(self.player.rect.to_sdl().unwrap());
+
+        // Render the ship
         phi.renderer.copy(&mut self.player.tex,
         Rectangle {
             x: 0.0,
@@ -105,7 +108,8 @@ impl View for ShipView {
         }.to_sdl(),
 
 
-        self.player.rect.to_sdl());
+        self.player.rect.to_sdl())
+            .unwrap();
 
         ViewAction::None
     }
