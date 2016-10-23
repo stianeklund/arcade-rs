@@ -24,14 +24,6 @@ pub struct Phi<'window> {
     pub events: Events,
     pub renderer: Renderer<'window>,
 }
-// TODO: Remove dead code
-// Implement output size
-// impl <'window> Phi<'window> {
-//    pub fn output_size(&self) -> (f64, f64) {
-//        let (w, h) = self.renderer.output_size().unwrap();
-//        (w as f64, h as f64)
-//    }
-// }
 
 /// Init logic for Phi to new method called new.
 /// Note Phi::new is not public (We do not want users of the library to create their own context.
@@ -43,6 +35,10 @@ impl <'window> Phi<'window> {
             events: events,
             renderer: renderer,
         }
+    }
+    pub fn output_size(&self) -> (f64, f64) {
+        let (w, h) = self.renderer.output_size().unwrap();
+        (w as f64, h as f64)
     }
 }
 pub enum ViewAction {
@@ -77,15 +73,7 @@ pub fn spawn<F>(title: &str, init: F)
         .accelerated()
         .build().unwrap());
 
-    // Create context
-    // let mut context = Phi {
-    //    events: Events::new(sdl_context.event_pump().expect("failed to create new event context")),
-    //    renderer: window.renderer()
-    //        .accelerated()
-    //        .build().expect("window rendering failed"),
-    // };
-
-    // Create default view
+    // Create view
     // let mut current_view: Box<View> = Box::new(::views::DefaultView);
     let mut current_view = init(&mut context);
 
