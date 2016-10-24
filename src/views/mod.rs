@@ -92,6 +92,10 @@ impl View for ShipView {
         phi.renderer.set_draw_color(Color::RGB(0, 0, 0));
         phi.renderer.clear();
 
+        // Render bounding box (for debugging)
+        phi.renderer.set_draw_color(Color::RGB(200, 200, 50));
+        phi.renderer.fill_rect(self.player.rect.to_sdl().unwrap());
+
         // Render the ship
         phi.renderer.copy(&mut self.player.tex,
         Rectangle {
