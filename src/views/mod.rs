@@ -28,7 +28,7 @@ impl ShipView {
         // Try to load texture png from FS.
 
         // .expect() actually causes issues here.
-        let tex = phi.renderer.load_texture(Path::new("assets/spaceship.png")).unwrap();
+        let tex = phi.renderer.load_texture(Path::new("assets/spaceship.png")).expect("texture not found");
         // Destructure width & height properties (to be used for the ship's bounding box)
         let TextureQuery { width, height, .. } = tex.query();
 
