@@ -9,6 +9,8 @@ use sdl2_image::LoadTexture;
 
 // Pixels traversed every second when the ship is moving
 const PLAYER_SPEED: f64 = 180.0;
+const SHIP_W: f64 = 43.0;
+const SHIP_H: f64 = 39.0;
 
 
 // View definitions
@@ -26,7 +28,7 @@ impl ShipView {
     pub fn new(phi: &mut Phi) -> ShipView {
 
         // Try to load texture png from FS.
-        let tex = phi.renderer.load_texture(Path::new("assets/spaceship.png")).expect("texture not found");
+        let tex = phi.renderer.load_texture(Path::new("assets/spaceship.png")).unwrap();
         // Destructure width & height properties (to be used for the ship's bounding box)
         let TextureQuery { width, height, .. } = tex.query();
 
@@ -99,8 +101,8 @@ impl View for ShipView {
         // Render the ship
         phi.renderer.copy(&mut self.player.tex,
         Rectangle {
-            x: 0.0,
-            y: 0.0,
+            x: SHIP_W * 0.0,
+            y: SHIP_H * 1.0,
             w: self.player.rect.w,
             h: self.player.rect.h,
         }.to_sdl(),
