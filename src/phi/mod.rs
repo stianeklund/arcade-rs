@@ -30,6 +30,7 @@ pub struct Phi<'window> {
 /// Note Phi::new is not public (We do not want users of the library to create their own context.
 /// If they did, sdl2_image lib could be freed at any time, which would remove all guarantees of the
 /// image loading.
+
 impl <'window> Phi<'window> {
     fn new(events: Events, renderer: Renderer<'window>) -> Phi<'window> {
         Phi {
