@@ -101,6 +101,7 @@ impl View for ShipView {
         phi.renderer.fill_rect(self.player.rect.to_sdl().unwrap());
 
         // Render the ship
+        // TODO fix no method render found for type phi::gfx::Sprite in current scope;
         self.player.sprite.render(&mut phi.renderer, self.player.rect);
         // phi.renderer.copy(&mut self.player.tex,
         // Rectangle {
