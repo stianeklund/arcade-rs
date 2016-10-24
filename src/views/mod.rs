@@ -3,6 +3,7 @@
 use std::path::Path;
 use phi::{Phi, View, ViewAction};
 use phi::data::Rectangle;
+use phi::gfx::{Sprite};
 use sdl2::pixels::Color;
 use sdl2::render::{Texture, TextureQuery};
 use sdl2_image::LoadTexture;
@@ -17,7 +18,7 @@ const SHIP_H: f64 = 39.0;
 
 struct Ship {
     rect: Rectangle,
-    tex: Texture,
+    sprite: Sprite,
 }
 
 pub struct ShipView {
@@ -36,11 +37,10 @@ impl ShipView {
                 rect: Rectangle {
                     x: 64.0,
                     y: 64.0,
-                    w: SHIP_W,
-                    h: SHIP_H,
+                    w: w,
+                    h: h,
                 },
-                // We load now load the sprite instead
-                sprite: sprite,
+                sprite: sprite, // load sprite instead
                 // TODO Remove:
                 // tex: phi.renderer.load_texture(Path::new("assets/spaceship.png")).expect("Failed to load asset")
             }
