@@ -13,10 +13,10 @@ impl Rectangle {
 
     /// API changes in SDL2 stack 0.24 & up. Comments below apply to v.0.24 and up only.
     /// sdl2 renderer drawing methods return Result<(), String) which need to be unwrapped.
-    /// Rect::new (0.24 & up) no longer returns Result but the Rect itself.
-    ///
-    /// Create's an SDL compatible Rect equivilent to self. Panics if coordinate overflows an i32
-    /// Main difference is that SdlRect::new is wrapped within Some() as a workaround as
+    /// Rect::new (0.24 & up) no longer returns a Result type, but the Rect itself.
+
+    /// to_sdl create's an SDL compatible Rect equivilent to self.
+    /// Workaround for SDL2 0.24 stack is that SdlRect::new is wrapped within Some() as a workaround as
     /// SdlRect::new used to return a Result type.
 
     pub fn to_sdl(self) -> Option<SdlRect> {
