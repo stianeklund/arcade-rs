@@ -16,11 +16,16 @@ use sdl2_image::LoadTexture;
 /// It's likely needed for sprite usage as parts of the asset is cloned as different areas of the
 /// image is used to generate different sprites?
 
+pub struct Sprite {
+    tex: Rc<RefCell<Texture>>,
+    src: Rectangle,
+}
+
 // Implementing the Clone trait for Sprite manually (for learning purposes).
 // Quick way to do this is to tell the compiler to derive the Clone trait:
 // #[derive(Clone)]
 
-impl clone for Sprite {
+impl Clone for Sprite {
     fn clone(&self) -> Sprite {
         Sprite {
             tex: self.tex.clone(),
@@ -28,12 +33,6 @@ impl clone for Sprite {
         }
     }
 }
-
-pub struct Sprite {
-    tex: Rc<RefCell<Texture>>,
-    src: Rectangle,
-}
-
 
 
 impl Sprite {
@@ -53,7 +52,7 @@ impl Sprite {
     }
 
     // Creates a new sprite from the asset image. Note: the Option return type.
-    pub fn load(renderer: &Renderer, path: &str) -> Option(Sprite) {
+    pub fn load(renderer: &Renderer, path: &str) -> Option<Sprite> {
         renderer.load_texture(Path::new(path)).ok().map(Sprite::new)
     }
 
@@ -92,8 +91,4 @@ impl Sprite {
         renderer.copy(&mut self.tex.borrow_mut(), self.src.to_sdl(), dest.to_sdl())
     }
 }
-
-
-
-
 
