@@ -19,10 +19,6 @@ use sdl2_image::LoadTexture;
 // Implementing the Clone trait for Sprite manually (for learning purposes).
 // Quick way to do this is to tell the compiler to derive the Clone trait:
 // #[derive(Clone)]
-pub struct Sprite {
-    tex: Rc<RefCell<Texture>>,
-    src: Rectangle,
-}
 
 impl clone for Sprite {
     fn clone(&self) -> Sprite {
@@ -33,10 +29,17 @@ impl clone for Sprite {
     }
 }
 
+pub struct Sprite {
+    tex: Rc<RefCell<Texture>>,
+    src: Rectangle,
+}
+
+
+
 impl Sprite {
     // Creates a new sprite by wrapping a texture
     pub fn new(texture: Texture) -> Sprite {
-        let tex_querty = texture.query();
+        let tex_query = texture.query();
 
         Sprite {
             tex: Rc::new(RefCell::new(texture)),
