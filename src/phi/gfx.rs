@@ -87,6 +87,8 @@ impl Sprite {
     /// borrow.mut() is probably similar to refcell. Are we temporarily borrowing mutability of
     /// self? Wat?
 
+    // TODO
+    // Mismatched types, expected () found Result<(), std::string::String>
     pub fn renderer(&self, renderer: &mut Renderer, dest: Rectangle) {
         renderer.copy(&mut self.tex.borrow_mut(), self.src.to_sdl(), dest.to_sdl())
     }
