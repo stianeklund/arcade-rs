@@ -28,19 +28,20 @@ impl ShipView {
     pub fn new(phi: &mut Phi) -> ShipView {
 
         // Try to load texture png from FS.
-        let tex = phi.renderer.load_texture(Path::new("assets/spaceship.png")).unwrap();
+        // let tex = phi.renderer.load_texture(Path::new("assets/spaceship.png")).unwrap();
         // Destructure width & height properties (to be used for the ship's bounding box)
-        let TextureQuery { width, height, .. } = tex.query();
+        // let TextureQuery { width, height, .. } = tex.query();
 
         ShipView {
             player: Ship {
                 rect: Rectangle {
                     x: 64.0,
                     y: 64.0,
-                    w: width as f64,
-                    h: height as f64,
+                    w: SHIP_W,
+                    h: SHIP_H,
                 },
-                tex: tex,
+
+                tex: phi.renderer.load_texture(Path::new("assets/spaceship.png")).expect("Failed to load asset")
             }
         }
     }
