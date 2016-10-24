@@ -26,11 +26,10 @@ pub struct ShipView {
 
 impl ShipView {
     pub fn new(phi: &mut Phi) -> ShipView {
+        let sprite = Sprite::load(&mut phi.renderer, "assets/spaceship.png").unwrap();
+        // NOTE size method takes &self and returns (f64, f64), of which we pass src.w, src.h)
+        let (w, h) = sprite.size();
 
-        // Try to load texture png from FS.
-        // let tex = phi.renderer.load_texture(Path::new("assets/spaceship.png")).unwrap();
-        // Destructure width & height properties (to be used for the ship's bounding box)
-        // let TextureQuery { width, height, .. } = tex.query();
 
         ShipView {
             player: Ship {
@@ -40,8 +39,10 @@ impl ShipView {
                     w: SHIP_W,
                     h: SHIP_H,
                 },
-
-                tex: phi.renderer.load_texture(Path::new("assets/spaceship.png")).expect("Failed to load asset")
+                // We load now load the sprite instead
+                sprite: sprite,
+                // TODO Remove:
+                // tex: phi.renderer.load_texture(Path::new("assets/spaceship.png")).expect("Failed to load asset")
             }
         }
     }
@@ -100,16 +101,17 @@ impl View for ShipView {
         phi.renderer.fill_rect(self.player.rect.to_sdl().unwrap());
 
         // Render the ship
-        phi.renderer.copy(&mut self.player.tex,
-        Rectangle {
-            x: SHIP_W * 0.0,
-            y: SHIP_H * 1.0,
-            w: self.player.rect.w,
-            h: self.player.rect.h,
-        }.to_sdl(),
+        self.player.sprite.render(&mut phi.renderer, self.player.rect);
+        // phi.renderer.copy(&mut self.player.tex,
+        // Rectangle {
+            // x: SHIP_W * 0.0,
+            // y: SHIP_H * 1.0,
+            // w: self.player.rect.w,
+            // h: self.player.rect.h,
+        // }.to_sdl(),
 
 
-        self.player.rect.to_sdl())
+        self.player.rect.to_sdl()
             .unwrap();
 
         ViewAction::None
