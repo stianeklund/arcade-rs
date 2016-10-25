@@ -3,12 +3,12 @@
 use std::path::Path;
 use phi::{Phi, View, ViewAction};
 use phi::data::Rectangle;
-use phi::gfx::{Sprite};
+use phi::gfx::Sprite;
 use sdl2::pixels::Color;
 use sdl2::render::{Texture, TextureQuery};
 use sdl2_image::LoadTexture;
 
-// Pixels traversed every second when the ship is moving
+// Pixels traversed very second when the ship is moving
 const PLAYER_SPEED: f64 = 180.0;
 const SHIP_W: f64 = 43.0;
 const SHIP_H: f64 = 39.0;
