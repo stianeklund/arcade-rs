@@ -89,8 +89,17 @@ impl Sprite {
 
     // TODO
     // Mismatched types, expected () found Result<(), std::string::String>
-    pub fn renderer(&self, renderer: &mut Renderer, dest: Rectangle) {
+    pub fn render(&self, renderer: &mut Renderer, dest: Rectangle) {
         renderer.copy(&mut self.tex.borrow_mut(), self.src.to_sdl(), dest.to_sdl())
+    }
+}
+pub trait CopySprite {
+    fn copy_sprite(&mut self, sprite: &Sprite, dest: Rectangle);
+}
+
+impl<'window> CopySprite for Renderer<'window> {
+    fn copy_sprite(&mut self, sprite: &Sprite, dest: Rectangle) {
+        sprite.render(self, dest);
     }
 }
 
