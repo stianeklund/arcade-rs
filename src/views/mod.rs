@@ -3,7 +3,7 @@
 use std::path::Path;
 use phi::{Phi, View, ViewAction};
 use phi::data::Rectangle;
-use phi::gfx::Sprite;
+use phi::gfx::{CopySprite, Sprite};
 use sdl2::pixels::Color;
 use sdl2::render::{Texture, TextureQuery};
 use sdl2_image::LoadTexture;
