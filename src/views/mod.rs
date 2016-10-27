@@ -1,12 +1,9 @@
 // views/mod.rs
 
-use std::path::Path;
 use phi::{Phi, View, ViewAction};
 use phi::data::Rectangle;
 use phi::gfx::{CopySprite, Sprite};
 use sdl2::pixels::Color;
-use sdl2::render::{Texture, TextureQuery};
-use sdl2_image::LoadTexture;
 
 // Pixels traversed very second when the ship is moving
 const PLAYER_SPEED: f64 = 180.0;
@@ -18,7 +15,8 @@ const SHIP_H: f64 = 39.0;
 
 struct Ship {
     rect: Rectangle,
-    sprite: Sprite,
+    sprite: Vec<Sprite>,
+    current: ShipFrame,
 }
 
 pub struct ShipView {
@@ -27,10 +25,24 @@ pub struct ShipView {
 
 impl ShipView {
     pub fn new(phi: &mut Phi) -> ShipView {
-        let sprite = Sprite::load(&mut phi.renderer, "assets/spaceship.png").unwrap();
+        // let sprite = Sprite::load(&mut phi.renderer, "assets/spaceship.png").unwrap();
         // NOTE size method takes &self and returns (f64, f64), of which we pass src.w, src.h)
-        let (w, h) = sprite.size();
+        // let (w, h) = sprite.size();
 
+        // TODO Implement spritesheet
+        let spritesheet = Sprite::load(&mut phi.renderer, "assets/spaceship.png").unwrap();
+        // Allocate sprite data (we already Vec capacity).
+        let mut sprites = Vec::with_capacity(9);
+        for y in 0..3 {
+            for x in 0..3 {
+                sprites.push(spritesheet.region(Rectangle {
+                    w: SHIP_W,
+                    h: SHIP_H,
+                    x: SHIP_W * x as f64,
+                    y: SHIP_H * y as f64,
+                }).unwrap());
+            }
+        }
 
         ShipView {
             player: Ship {
@@ -40,9 +52,8 @@ impl ShipView {
                     w: w,
                     h: h,
                 },
-                sprite: sprite, // load sprite instead
-                // TODO Remove:
-                // tex: phi.renderer.load_texture(Path::new("assets/spaceship.png")).expect("Failed to load asset")
+                sprite: sprite,
+                current: ShipFrame::MidNorm,
             }
         }
     }
@@ -101,19 +112,8 @@ impl View for ShipView {
         phi.renderer.fill_rect(self.player.rect.to_sdl().unwrap());
 
         // Render the ship
-        // TODO fix no method render found for type phi::gfx::Sprite in current scope;
-        self.player.sprite.render(&mut phi.renderer, self.player.rect);
         // phi.renderer.copy(&mut self.player.tex,
-        // Rectangle {
-            // x: SHIP_W * 0.0,
-            // y: SHIP_H * 1.0,
-            // w: self.player.rect.w,
-            // h: self.player.rect.h,
-        // }.to_sdl(),
-
-
-        self.player.rect.to_sdl()
-            .unwrap();
+        self.player.sprite.render(&mut phi.renderer, self.player.rect);
 
         ViewAction::None
     }
