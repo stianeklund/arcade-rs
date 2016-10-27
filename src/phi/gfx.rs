@@ -11,35 +11,18 @@ use sdl2_image::LoadTexture;
 /// This is much like a single-threaded mutex behavior wise.
 /// The internal reference count gets modified & returns smart pointers, which can be
 /// dereferenced immutably & mutably. Refcount is restored when smart pointers go out of scope.
-/// TODO: Read up on RefCell to get a better understanding of this.
-
-/// It's likely needed for sprite usage as parts of the asset is cloned as different areas of the
-/// image is used to generate different sprites?
 
 pub struct Sprite {
     tex: Rc<RefCell<Texture>>,
     src: Rectangle,
 }
 
-// Implementing the Clone trait for Sprite manually (for learning purposes).
-// Quick way to do this is to tell the compiler to derive the Clone trait:
-// #[derive(Clone)]
-
-impl Clone for Sprite {
-    fn clone(&self) -> Sprite {
-        Sprite {
-            tex: self.tex.clone(),
-            src: self.src.clone(),
-        }
-    }
-}
-
-
 impl Sprite {
     // Creates a new sprite by wrapping a texture
     pub fn new(texture: Texture) -> Sprite {
         let tex_query = texture.query();
 
+        #[derive(Clone)]
         Sprite {
             tex: Rc::new(RefCell::new(texture)),
             src: Rectangle {
