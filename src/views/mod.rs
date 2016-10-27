@@ -82,7 +82,8 @@ pub struct ShipView {
 impl ShipView {
     pub fn new(phi: &mut Phi) -> ShipView {
 
-        let spritesheet = Sprite::load(&mut phi.renderer, "assets/spaceship.png").unwrap();
+        let spritesheet = Sprite::load(&mut phi.renderer, "assets/spaceship.png")
+            .expect("Failed to load main asset");
         // Allocate sprite data (we already know Vec capacity).
         let mut sprites = Vec::with_capacity(9);
         for y in 0..3 {
@@ -110,17 +111,20 @@ impl ShipView {
             bg_back: Background {
                 pos: 0.0,
                 vel: 20.0,
-                sprite: Sprite::load(&mut phi.renderer, "assets/starBG.png").unwrap(),
+                sprite: Sprite::load(&mut phi.renderer, "assets/starBG.png")
+                    .expect("failed to load background asset"),
             },
             bg_middle: Background {
                 pos: 0.0,
                 vel: 40.0,
-                sprite: Sprite::load(&mut phi.renderer, "assets/starMG.png").unwrap(),
+                sprite: Sprite::load(&mut phi.renderer, "assets/starMG.png")
+                    .expect("failed to load middle asset"),
             },
             bg_front: Background {
                 pos: 0.0,
                 vel: 80.0,
-                sprite: Sprite::load(&mut phi.renderer, "assets/starFG.png").unwrap(),
+                sprite: Sprite::load(&mut phi.renderer, "assets/starFG.png")
+                    .expect("failed to load foreground asset"),
             },
 
 
