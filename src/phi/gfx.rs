@@ -12,6 +12,7 @@ use sdl2_image::LoadTexture;
 /// The internal reference count gets modified & returns smart pointers, which can be
 /// dereferenced immutably & mutably. Refcount is restored when smart pointers go out of scope.
 
+#[derive(Clone)]
 pub struct Sprite {
     tex: Rc<RefCell<Texture>>,
     src: Rectangle,
@@ -22,7 +23,6 @@ impl Sprite {
     pub fn new(texture: Texture) -> Sprite {
         let tex_query = texture.query();
 
-        #[derive(Clone)]
         Sprite {
             tex: Rc::new(RefCell::new(texture)),
             src: Rectangle {
