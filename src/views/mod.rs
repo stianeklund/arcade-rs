@@ -27,7 +27,7 @@ enum ShipFrame {
 }
 struct Ship {
     rect: Rectangle,
-    sprite: Vec<Sprite>,
+    sprites: Vec<Sprite>,
     current: ShipFrame,
 }
 
