@@ -9,9 +9,15 @@ use sdl2::pixels::Color;
 const PLAYER_SPEED: f64 = 180.0;
 const SHIP_W: f64 = 43.0;
 const SHIP_H: f64 = 39.0;
+const DEBUG: bool = false;
 
 
-// View definitions
+#[derive(Clone)]
+struct Background {
+    pos: f64,
+    vel: f64, // velocity in seconds movement right to left
+    sprite: Sprite,
+}
 
 #[derive(Clone, Copy)]
 enum ShipFrame {
@@ -33,17 +39,18 @@ struct Ship {
 
 pub struct ShipView {
     player: Ship,
+
+    bg_back: Background,
+    bg_middle: Background,
+    bg_front: Background,
+
 }
 
 impl ShipView {
     pub fn new(phi: &mut Phi) -> ShipView {
-        // let sprite = Sprite::load(&mut phi.renderer, "assets/spaceship.png").unwrap();
-        // NOTE size method takes &self and returns (f64, f64), of which we pass src.w, src.h)
-        // let (w, h) = sprite.size();
 
-        // TODO Implement spritesheet
         let spritesheet = Sprite::load(&mut phi.renderer, "assets/spaceship.png").unwrap();
-        // Allocate sprite data (we already Vec capacity).
+        // Allocate sprite data (we already know Vec capacity).
         let mut sprites = Vec::with_capacity(9);
         for y in 0..3 {
             for x in 0..3 {
@@ -66,12 +73,30 @@ impl ShipView {
                 },
                 sprites: sprites,
                 current: ShipFrame::MidNorm,
+            },
+            bg_back: Background {
+                pos: 10.0,
+                vel: 10.0,
+                sprite: Sprite::load(&mut phi.renderer, "assets/starBG.png").unwrap(),
+            },
+            bg_middle: Background {
+                pos: 20.0,
+                vel: 20.0,
+                sprite: Sprite::load(&mut phi.renderer, "assets/starMG.png").unwrap(),
+            },
+            bg_front: Background {
+                pos: 20.0,
+                vel: 40.0,
+                sprite: Sprite::load(&mut phi.renderer, "assets/starFG.png").unwrap(),
             }
+
+
         }
     }
 }
 
 
+// View definitions
 impl View for ShipView {
     fn render(&mut self, phi: &mut Phi, elapsed: f64) -> ViewAction {
         if phi.events.now.quit || phi.events.now.key_escape == Some(true) {
@@ -130,9 +155,12 @@ impl View for ShipView {
         phi.renderer.set_draw_color(Color::RGB(0, 0, 0));
         phi.renderer.clear();
 
+
         // Render bounding box (for debugging)
-        // phi.renderer.set_draw_color(Color::RGB(200, 200, 50));
-        // phi.renderer.fill_rect(self.player.rect.to_sdl().unwrap());
+        if DEBUG {
+        phi.renderer.set_draw_color(Color::RGB(200, 200, 50));
+        phi.renderer.fill_rect(self.player.rect.to_sdl().unwrap());
+        }
 
         // Render the ship
         // self.player.sprite.render(&mut phi.renderer, self.player.rect);
