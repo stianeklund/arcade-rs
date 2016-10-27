@@ -83,14 +83,10 @@ impl Sprite {
         (self.src.w, self.src.h)
     }
 
-    /// TODO: Look into renderer method & borrow_mut method
-    /// borrow.mut() is probably similar to refcell. Are we temporarily borrowing mutability of
-    /// self? Wat?
-
-    // TODO
-    // Mismatched types, expected () found Result<(), std::string::String>
+    // TODO Fix type mismatch, copy of renderer returns Result<(), String>, should return value
+    // Remove unwrap()
     pub fn render(&self, renderer: &mut Renderer, dest: Rectangle) {
-        renderer.copy(&mut self.tex.borrow_mut(), self.src.to_sdl(), dest.to_sdl())
+        renderer.copy(&mut self.tex.borrow_mut(), self.src.to_sdl(), dest.to_sdl()).unwrap();
     }
 }
 pub trait CopySprite {
