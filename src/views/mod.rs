@@ -61,10 +61,10 @@ impl ShipView {
                 rect: Rectangle {
                     x: 64.0,
                     y: 64.0,
-                    w: w,
-                    h: h,
+                    w: SHIP_W,
+                    h: SHIP_H,
                 },
-                sprite: sprite,
+                sprite: sprites,
                 current: ShipFrame::MidNorm,
             }
         }
@@ -114,8 +114,19 @@ impl View for ShipView {
         self.player.rect = self.player.rect
             .move_inside(movable_region)
             .expect("Player cannot fit in screen");
+        // Select the appropriate sprite of the ship to show.
+        self.player.current =
+            if dx == 0.0 && dy < 0.0       { ShipFrame::UpNorm }
+            else if dx > 0.0 && dy < 0.0   { ShipFrame::UpFast }
+            else if dx < 0.0 && dy < 0.0   { ShipFrame::UpSlow }
+            else if dx == 0.0 && dy == 0.0 { ShipFrame::MidNorm }
+            else if dx > 0.0 && dy == 0.0  { ShipFrame::MidFast }
+            else if dx < 0.0 && dy == 0.0  { ShipFrame::MidSlow }
+            else if dx == 0.0 && dy > 0.0  { ShipFrame::DownNorm }
+            else if dx > 0.0 && dy > 0.0   { ShipFrame::DownFast }
+            else if dx < 0.0 && dy > 0.0   { ShipFrame::DownSlow }
+            else { unreachable!() };        // Clear screen
 
-        // Clear screen
         phi.renderer.set_draw_color(Color::RGB(0, 0, 0));
         phi.renderer.clear();
 
@@ -124,9 +135,10 @@ impl View for ShipView {
         phi.renderer.fill_rect(self.player.rect.to_sdl().unwrap());
 
         // Render the ship
-        // phi.renderer.copy(&mut self.player.tex,
-        self.player.sprite.render(&mut phi.renderer, self.player.rect);
-
+        // self.player.sprite.render(&mut phi.renderer, self.player.rect);
+        phi.renderer.copy_sprite(
+            &self.player.sprites[self.player.current as usize],
+            self.player.rect);
         ViewAction::None
     }
 }
