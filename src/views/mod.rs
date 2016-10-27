@@ -64,7 +64,7 @@ impl ShipView {
                     w: SHIP_W,
                     h: SHIP_H,
                 },
-                sprite: sprites,
+                sprites: sprites,
                 current: ShipFrame::MidNorm,
             }
         }
