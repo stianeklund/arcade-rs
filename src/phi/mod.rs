@@ -7,6 +7,8 @@ pub mod gfx;
 
 use sdl2::render::Renderer;
 
+const DEBUG: bool = false;
+
 struct_events! {
     keyboard: {
         key_escape: Escape,
@@ -65,7 +67,7 @@ pub fn spawn<F>(title: &str, init: F)
 
     // Create window
     let window = video.window("ArcadeRS Shooter", 800, 600)
-        .position_centered().opengl().resizable()
+        .position_centered()// .opengl()
         .build().expect("Window creation failed");
 
     // Create new instance of Phi
@@ -98,14 +100,16 @@ pub fn spawn<F>(title: &str, init: F)
             continue;
         }
 
-        // Print FPS
-        before = now;
-        fps += 1;
-
-        if now - last_second > 1_000 {
-            println!("FPS: {}", fps);
-            last_second = now;
-            fps = 0;
+        // TODO Background assets render strangely
+        // They render too fast without FPS output and too slow with
+        if DEBUG {
+            before = now;
+            fps += 1;
+            if now - last_second > 1_000 {
+                println!("FPS: {}", fps);
+                last_second = now;
+                fps = 0;
+            }
         }
 
         // Rendering logic
