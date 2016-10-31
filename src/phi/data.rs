@@ -13,7 +13,7 @@ impl Rectangle {
 
     /// API changes in SDL2 stack 0.24 & up. Comments below apply to v.0.24 and up only.
     /// sdl2 renderer drawing methods return Result<(), String) which need to be unwrapped.
-    /// Rect::new (0.24 & up) no longer returns a Result type, but the Rect itself.
+    /// Rect::new (0.24 & up) no longer returns a Result type, but the value of Rect itself.
 
     /// to_sdl create's an SDL compatible Rect equivilent to self.
     /// Workaround for SDL2 0.24 stack is that SdlRect::new is wrapped within Some() as a workaround as
@@ -45,8 +45,7 @@ impl Rectangle {
         self.y + self.h > other.y
     }
 
-
-    // Return a rectangle which is contained the parent rectangle.
+    // This defines our allowed area of movement within the parent rectangle
     pub fn move_inside(self, parent: Rectangle) -> Option<Rectangle> {
         if self.w > parent.w || self.h > parent.h {
             return None;
