@@ -29,10 +29,10 @@ pub struct Phi<'window> {
     pub renderer: Renderer<'window>,
 }
 
-/// Init logic for Phi to new method called new.
-/// Note Phi::new is not public (We do not want users of the library to create their own context.
-/// If they did, sdl2_image lib could be freed at any time, which would remove all guarantees of the
-/// image loading.
+// Init logic for Phi to new method called new.
+// Note Phi::new is not public (We do not want users of the library to create their own context.
+// If they did, sdl2_image lib could be freed at any time, which would remove all guarantees of the
+// image loading.
 
 impl <'window> Phi<'window> {
     fn new(events: Events, renderer: Renderer<'window>) -> Phi<'window> {
@@ -88,7 +88,7 @@ pub fn spawn<F>(title: &str, init: F)
     let mut last_second = timer.ticks();
     let mut fps = 0u16;
 
-    // Iterate over event pump
+    // Iterate over eventpump
     loop {
         // Frame timing (second instance)
         let now = timer.ticks();
