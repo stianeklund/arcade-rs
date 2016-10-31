@@ -23,7 +23,6 @@ struct Background {
 }
 
 
-// TODO Investigate stretched rendering of bg_middle asset
 impl Background {
     fn render(&mut self, renderer: &mut Renderer, elapsed: f64) {
         let size = self.sprite.size();
@@ -33,6 +32,8 @@ impl Background {
             self.pos -= size.0;
         }
 
+        // Determine the scale ratio of the window to the sprite
+        // TODO: Investigate stretched rendering of bg_middle asset
         let (win_w, win_h) = renderer.output_size().unwrap();
         let scale = win_h  as f64 / size.1;
 
@@ -193,7 +194,7 @@ impl View for ShipView {
         phi.renderer.set_draw_color(Color::RGB(0, 0, 0));
         phi.renderer.clear();
 
-        // Render the Backgrounds
+        // Render the backgrounds
         self.bg_back.render(&mut phi.renderer, elapsed);
         self.bg_middle.render(&mut phi.renderer, elapsed);
 
