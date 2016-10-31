@@ -4,6 +4,6 @@ Original source can be found here: https://github.com/jadpole/jadpole.github.io/
 Documentation & tutorial here: http://jadpole.github.io/arcaders/arcaders-1-0
 
 Screenshot of the game (in it's current state):
-![](https://raw.githubusercontent.com/stianeklund/arcade-rs/assets/screenshot.png)
+![](https://github.com/stianeklund/arcade-rs/blob/master/assets/screenshot.png)
 
 
