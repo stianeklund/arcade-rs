@@ -33,7 +33,6 @@ impl Background {
         }
 
         // Determine the scale ratio of the window to the sprite
-        // TODO: Investigate stretched rendering of bg_middle asset
         let (win_w, win_h) = renderer.output_size().unwrap();
         let scale = win_h  as f64 / size.1;
 
@@ -115,6 +114,7 @@ impl ShipView {
                 sprite: Sprite::load(&mut phi.renderer, "assets/starBG.png")
                     .expect("failed to load background asset"),
             },
+            // TODO Investigate stretched background middle asset
             bg_middle: Background {
                 pos: 0.0,
                 vel: 40.0,
