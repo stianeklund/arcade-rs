@@ -7,6 +7,7 @@ pub mod gfx;
 
 use sdl2::render::Renderer;
 
+// Enable for console FPS output
 const DEBUG: bool = false;
 
 struct_events! {
@@ -99,18 +100,15 @@ pub fn spawn<F>(title: &str, init: F)
             timer.delay(interval - dt);
             continue;
         }
-
-        // TODO Background assets render strangely
-        // They render too fast without FPS output and too slow with
-        if DEBUG {
             before = now;
             fps += 1;
             if now - last_second > 1_000 {
+                if DEBUG {
                 println!("FPS: {}", fps);
+                }
                 last_second = now;
                 fps = 0;
             }
-        }
 
         // Rendering logic
         context.events.pump(&mut context.renderer);
