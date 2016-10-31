@@ -1,3 +1,5 @@
+// phi/events.rs
+// Note: we're creating a macro for later usage.
 macro_rules! struct_events {
     (
     keyboard: { $( $k_alias:ident : $k_sdl:ident ),* },
@@ -22,7 +24,7 @@ macro_rules! struct_events {
             pub fn new() -> ImmediateEvents {
                 ImmediateEvents {
                     resize: None,
-                    // When reinitalized nothing has happened yet.
+                    // When reinitalized nothing has happened yet
                     $( $k_alias: None , )*
                     $( $e_alias: false ),*
                 }
@@ -42,7 +44,7 @@ macro_rules! struct_events {
                 Events {
                     pump: pump,
                     now: ImmediateEvents::new(),
-                    // Init all keys as non pressed
+                    // Initialize keys as not pressed; the opposite = issues
                     $( $k_alias: false ),*
                 }
             }
