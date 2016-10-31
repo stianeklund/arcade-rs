@@ -13,6 +13,7 @@ const SHIP_W: f64 = 43.0;
 const SHIP_H: f64 = 39.0;
 
 const DEBUG: bool = false;
+
 #[derive(Clone)]
 struct Background {
     pos: f64,
@@ -22,23 +23,23 @@ struct Background {
 }
 
 
+// TODO Investigate stretched rendering of bg_middle asset
 impl Background {
     fn render(&mut self, renderer: &mut Renderer, elapsed: f64) {
         let size = self.sprite.size();
         self.pos += self.vel * elapsed;
+
         if self.pos > size.0 {
             self.pos -= size.0;
         }
 
-            let (win_w, win_h) = renderer.output_size().unwrap();
-            let scale = win_h  as f64 / size.1;
+        let (win_w, win_h) = renderer.output_size().unwrap();
+        let scale = win_h  as f64 / size.1;
 
-            // We render as many copies of the background as necessary to fill
-            // the screen.
-            // TODO Investigate stretched background assets
-            let mut physical_left = -self.pos * scale;
+        // Render as many copies of the background as needed to fill the screen.
+        let mut physical_left = -self.pos * scale;
 
-            while physical_left < win_w as f64 {
+        while physical_left < win_w as f64 {
                 renderer.copy_sprite(&self.sprite, Rectangle {
                     x: physical_left,
                     y: 0.0,
@@ -46,9 +47,9 @@ impl Background {
                     h: win_h as f64,
                 });
                 physical_left += size.0 * scale;
-            }
         }
     }
+}
 
 #[derive(Clone, Copy)]
 enum ShipFrame {
@@ -133,14 +134,14 @@ impl ShipView {
 
 
 // View definitions
+
 impl View for ShipView {
     fn render(&mut self, phi: &mut Phi, elapsed: f64) -> ViewAction {
         if phi.events.now.quit || phi.events.now.key_escape == Some(true) {
             return ViewAction::Quit;
         }
 
-
-        // Move the ship
+        // Player movement
         let diagonal =
             (phi.events.key_up ^ phi.events.key_down) &&
             (phi.events.key_left ^ phi.events.key_right);
@@ -164,7 +165,7 @@ impl View for ShipView {
         self.player.rect.y += dy;
 
 
-        // Restrict width
+        // Restrict players movable region
         let movable_region = Rectangle {
             x: 0.0,
             y: 0.0,
