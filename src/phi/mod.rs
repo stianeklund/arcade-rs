@@ -68,7 +68,7 @@ pub fn spawn<F>(title: &str, init: F)
 
     // Create window
     let window = video.window("ArcadeRS Shooter", 800, 600)
-        .position_centered()// .opengl()
+        .position_centered().opengl().resizable()
         .build().expect("Window creation failed");
 
     // Create new instance of Phi
