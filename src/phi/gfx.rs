@@ -7,10 +7,9 @@ use std::rc::Rc;
 use sdl2::render::{Renderer, Texture};
 use sdl2_image::LoadTexture;
 
-/// RefCell<T> provides interior mutability. Enforces RWLock pattern at runtime
-/// This is much like a single-threaded mutex behavior wise.
-/// The internal reference count gets modified & returns smart pointers, which can be
-/// dereferenced immutably & mutably. Refcount is restored when smart pointers go out of scope.
+// RefCell<T> provides interior mutability, just like a single-threaded mutex.
+// Enforces RWLock pattern at runtime
+// https://doc.rust-lang.org/nightly/book/choosing-your-guarantees.html
 
 #[derive(Clone)]
 pub struct Sprite {
@@ -39,9 +38,9 @@ impl Sprite {
         renderer.load_texture(Path::new(path)).ok().map(Sprite::new)
     }
 
-    /// Returns a new Sprite representing a sub-region of the current one (i.e a part of the image).
-    /// The provided 'rect' is relative to the currently held region.
-    /// Again, note the return Type.
+    // Returns a new Sprite representing a sub-region of the current one
+    // i.e a part of the image
+    // The provided 'rect' is relative to the currently held region.
 
     pub fn region(&self, rect: Rectangle) -> Option<Sprite> {
         let new_src = Rectangle {
@@ -66,12 +65,12 @@ impl Sprite {
         (self.src.w, self.src.h)
     }
 
-    // TODO Fix type mismatch, copy of renderer returns Result<(), String>, should return value
-    // Remove unwrap()
+    // borrow_mut() on self.tex (this is the magic of RefCell)
     pub fn render(&self, renderer: &mut Renderer, dest: Rectangle) {
         renderer.copy(&mut self.tex.borrow_mut(), self.src.to_sdl(), dest.to_sdl()).unwrap();
     }
 }
+
 pub trait CopySprite {
     fn copy_sprite(&mut self, sprite: &Sprite, dest: Rectangle);
 }
