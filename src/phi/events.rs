@@ -48,9 +48,9 @@ macro_rules! struct_events {
             }
             pub fn pump(&mut self, renderer: &mut ::sdl2::render::Renderer) {
                 // If SDL context is dropped, poll_iter() will not yield output
-                // Poll for escape keycode
                 self.now = ImmediateEvents::new();
 
+                // Iter over eventpump & poll for events, Esc being one of them
                 for event in self.pump.poll_iter() {
                     use sdl2::event::Event::*;
                     use sdl2::event::WindowEventId::Resized;
