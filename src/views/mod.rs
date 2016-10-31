@@ -28,12 +28,14 @@ impl Background {
         self.pos += self.vel * elapsed;
         if self.pos > size.0 {
             self.pos -= size.0;
+        }
 
             let (win_w, win_h) = renderer.output_size().unwrap();
             let scale = win_h  as f64 / size.1;
 
             // We render as many copies of the background as necessary to fill
             // the screen.
+            // TODO Investigate stretched background assets
             let mut physical_left = -self.pos * scale;
 
             while physical_left < win_w as f64 {
@@ -43,13 +45,10 @@ impl Background {
                     w: size.0 * scale,
                     h: win_h as f64,
                 });
-
                 physical_left += size.0 * scale;
             }
         }
     }
-}
-
 
 #[derive(Clone, Copy)]
 enum ShipFrame {
